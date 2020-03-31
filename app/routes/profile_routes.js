@@ -27,17 +27,50 @@ const requireToken = passport.authenticate('bearer', { session: false })
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
 
-// INDEX
-// GET /examples
-router.get('/profile', (req, res, next) => {
-  Profile.find()
+// INDEX SIGNED IN, OWNED
+// GET /events/owned
+router.get('/profiles/owned', requireToken, (req, res, next) => {
+  Profile.find({ owner: req.user._id })
     .then(profiles => {
-      // `examples` will be an array of Mongoose documents
+      // `events` will be an array of Mongoose documents
       // we want to convert each one to a POJO, so we use `.map` to
       // apply `.toObject` to each one
       return profiles.map(profile => profile.toObject())
     })
-    // respond with status 200 and JSON of the examples
+    // respond with status 200 and JSON of the events
+    .then(profiles => res.status(200).json({ profiles: profiles }))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
+// INDEX SIGNED OUT
+// GET /events/
+router.get('/profiles/openall', (req, res, next) => {
+  console.log('open')
+  Profile.find()
+    .then(profiles => {
+      // `events` will be an array of Mongoose documents
+      // we want to convert each one to a POJO, so we use `.map` to
+      // apply `.toObject` to each one
+      return profiles.map(profile => profile.toObject())
+    })
+    // respond with status 200 and JSON of the events
+    .then(profiles => res.status(200).json({ profiles: profiles }))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
+// INDEX SIGNED IN
+// GET /events
+router.get('/profiles', requireToken, (req, res, next) => {
+  Profile.find()
+    .then(profiles => {
+      // `events` will be an array of Mongoose documents
+      // we want to convert each one to a POJO, so we use `.map` to
+      // apply `.toObject` to each one
+      return profiles.map(profile => profile.toObject())
+    })
+    // respond with status 200 and JSON of the events
     .then(profiles => res.status(200).json({ profiles: profiles }))
     // if an error occurs, pass it to the handler
     .catch(next)
