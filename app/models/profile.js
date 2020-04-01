@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-// const Contact = require('./contact')
-// const contactSchema = Contact.schema
+const Contact = require('./option')
+const contactSchema = Contact.schema
 
 const profileSchema = new mongoose.Schema({
   name: {
@@ -32,9 +32,8 @@ const profileSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  }
-  // contact: [ contactSchema ],
-
+  },
+  contact: [ contactSchema ]
 }, {
   timestamps: true
 })
