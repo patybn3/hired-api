@@ -87,24 +87,12 @@ router.get('/profiles/:id', requireToken, (req, res, next) => {
     .catch(next)
 })
 
-// function appendOptionsToProfile (profile, options) {
-//   const optionsWithoutBlanks = options.filter(option => option !== '')
-//   const arrayOfObjects = optionsWithoutBlanks.map(option => {
-//     return {
-//       option: option
-//     }
-//   })
-//   profile.options = arrayOfObjects
-// }
-
 // CREATE
 // POST /examples
 router.post('/profiles', requireToken, (req, res, next) => {
   // set owner of new example to be current user
   req.body.profile.owner = req.user.id
-  // const profile = req.body.profile
-  // const options = req.body.options
-  // appendOptionsToProfile(profile, options)
+
   Profile.create(req.body.profile)
     // respond to succesful `create` with status 201 and JSON of new "example"
     .then(profile => {

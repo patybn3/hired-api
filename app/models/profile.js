@@ -1,8 +1,5 @@
 const mongoose = require('mongoose')
 
-const Contact = require('./option')
-const contactSchema = Contact.schema
-
 const profileSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -33,7 +30,10 @@ const profileSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  contact: [ contactSchema ]
+  contact: {
+    type: String,
+    required: true
+  }
 }, {
   timestamps: true
 })
