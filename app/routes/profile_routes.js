@@ -87,6 +87,16 @@ router.get('/profiles/:id', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+router.get('/profiles/owned/:id', requireToken, (req, res, next) => {
+  // req.params.id will be set based on the `:id` in the route
+  Profile.findById(req.params.id)
+    .then(handle404)
+    // if `findById` is succesful, respond with 200 and "example" JSON
+    .then(profile => res.status(200).json({ profile: profile.toObject() }))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
 // CREATE
 // POST /examples
 router.post('/profiles', requireToken, (req, res, next) => {
