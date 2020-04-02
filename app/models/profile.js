@@ -22,7 +22,7 @@ const profileSchema = new mongoose.Schema({
     required: true
   },
   salary: {
-    type: Number,
+    type: String,
     required: true
   },
   owner: {
@@ -32,7 +32,16 @@ const profileSchema = new mongoose.Schema({
   },
   contact: {
     type: String,
-    required: true
+    require: true
+  },
+  website: {
+    type: String
+  },
+  portfolio: {
+    type: String
+  },
+  other: {
+    type: String
   }
 }, {
   timestamps: true
