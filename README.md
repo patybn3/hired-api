@@ -1,6 +1,8 @@
 # Hired
 
-# express-api-template
+Hired is a Full Stack project in which this is the back-end repository. To check the front-end repository which is built on React.js click [HERE](https://github.com/patybn3/hired-client-react). This application used Heroku for version control which can be accessed [HERE](https://sleepy-coast-97158.herokuapp.com/) . The vision behind this application is to build a virtual "meet an hire" where an employer, or authenticated user can look for candidates. The first version of this app simply displays a list of the candidates. Second version will include pictures (app is already set up for AWS), posts and likes and the third version will allow a user to search for key words to find the candidates.
+
+## express-api-template
 
 A template for starting projects with `express` as an API. Includes
 authentication and common middlewares. Access template page [HERE](https://git.generalassemb.ly/ga-wdi-boston/express-api-template)
@@ -53,145 +55,99 @@ You probably will only need to interact with files in `app/models`,
 `app/routes`, and `server.js`. You'll need to edit `db/config.js` just once,
 to change the name of your app.
 
-## Tasks
+## Requirements
 
-Instead of `grunt`, this template uses `npm` as a task runner. This is more
-conventional for modern Express apps, and it's handy because we'll definitely
-use `npm` anyway. These are the commands available:
+Use the technologies of your choice for this project. The front and the back-end of this application are to be built individually. Both front-end and back-end are to be stored in a public GitHub account. The back-end of the web application also uses Heroku as the server. Changes made are to be commited and deployed often to both GitHub and Heroku to keep the records up to date. Application must be functional and follow the following MVP specifications:
 
-| Command                | Effect                                                                                                      |
-|------------------------|-------------------------------------------------------------------------------------------------------------|
-| `npm run server`       | Starts a development server with `nodemon` that automatically refreshes when you change something.                                                                                         |
-| `npm test`             | Runs automated tests.                                                                                       |
-| `npm run debug-server` | Starts the server in debug mode, which will print lots of extra info about what's happening inside the app. |
+Version Control Demonstrate using version control by:
 
-## API
+Sharing your work through a git repository hosted on Github. Making frequent, cohesive commits dating back to the first day of the project week. 1 commit on the first day of project week on both repos. At least 1 commit every day during project week (not necessarily on both repos).
 
-Use this as the basis for your own API documentation. Add a new third-level
-heading for your custom entities, and follow the pattern provided for the
-built-in user authentication documentation.
+Signup with email, password, and password confirmation. Login with email and password. Logout when logged in. Change password with current and new password. Signup and Signin must only be available to not signed in users. Logout and Change password must only be available to signed in users. Give feedback to the user after each action's success or failure. All forms must clear after submit success and user sign-out (Optional) Reset form to initial state on failure Client Specifications Use a front-end Javascript app to communicate with your API (both read and write) and render data that it receives in the browser.
+Create a joint table for a resource and allow the user to create, edit and delete resources.
 
-Scripts are included in [`curl-scripts`](curl-scripts) to test built-in actions.
-Add your own scripts to test your custom API.
+Your app must not:
 
-### Authentication
+Rely on refreshing the page for any functionality. Have any user-facing bugs. Display non-functional buttons, nor buttons that do not successfully complete a task. Show actions at inappropriate times (example: change password form when a user is not signed in). Forms not clearing at appropriate times (example: sign up form not clearing after success). Use alerts for anything. Display errors or warnings in the console. Display debugging messages in the console.
 
-| Verb   | URI Pattern            | Controller#Action |
-|--------|------------------------|-------------------|
-| POST   | `/sign-up`             | `users#signup`    |
-| POST   | `/sign-in`             | `users#signin`    |
-| PATCH  | `/change-password/` | `users#changepw`  |
-| DELETE | `/sign-out/`        | `users#signout`   |
+## Technologies:
 
-#### POST /sign-up
+ - MongoDB NoSQL.
+ - Express.js.
+ - Mongoose.
+ - GitHub.
+ - Git.
+ - Heroku.
+ - JavaScript.
+ - Node.js:
+   - Passport (for authentication).
+   - bcrypt (cryptography).
+   - CORS.
+   - dotenv (environment management).
+   - jsonwebtoken.
 
-Request:
+   ## Planning
 
-```sh
-curl --include --request POST http://localhost:4741/sign-up \
-  --header "Content-Type: application/json" \
-  --data '{
-    "credentials": {
-      "email": "an@example.email",
-      "password": "an example password",
-      "password_confirmation": "an example password"
-    }
-  }'
-```
+   ### User Stories
 
-```sh
-curl-scripts/sign-up.sh
-```
+   1. Vesion 1:
+     - As a user I would like to be able to sign up
+     - As a user I would like to be able to sign in
+     - As a user I would like to be able to change my password
+     - As a user I would like to be able to select if I am a candidate or an employer
+     - As a user I would like to be able to log out
+     - As a user I would like to be have my own profile
+     - As a user I would like to be to share a profile picture
+     - As a user I would like to be able to edit my profile
+     - As a user I would like to be able delete my profile
+     - As a user I would like to be able create my profile
+     - As a user I would like to be able to add my contact information
 
-Response:
+   2. Version 2:
+     - As a user I would like to be able to have a contact form
+     - As a user I would like to be able to see who contacted me
+     - As a user I would like to be able to create posts
+     - As a user I would like to be able to like posts and have my posts liked
+     - As a user I would like to be able to comment on my posts and other post
 
-```md
-HTTP/1.1 201 Created
-Content-Type: application/json; charset=utf-8
+   ### Schedule
 
-{
-  "user": {
-    "id": 1,
-    "email": "an@example.email"
-  }
-}
-```
+   the following schedule was followed:
 
-#### POST /sign-in
+   Set Up
+   API
 
-Request:
+    Download Express API Template or Download Rails API Template
+    Create a Github Repository
+    Deploy to Heroku with Express or Deploy to Heroku with Rails
+   Client
 
-```sh
-curl --include --request POST http://localhost:4741/sign-in \
-  --header "Content-Type: application/json" \
-  --data '{
-    "credentials": {
-      "email": "an@example.email",
-      "password": "an example password"
-    }
-  }'
-```
+    Download Browser Template or Download React Auth Template
+    Create a Github Repository
+    Deploy to Github Pages with Browser Template or Deploy to Github Pages with React Auth Template
+   API
+    Review express-api or rails-api
+    Create your resource and end points
+    Test your resource's end points with curl scripts
+    Add the relationship to a User
+    Add User ownership to resource controller
+   Client
+    Review jquery-ajax-token-auth or react-auth
+    Sign Up (curl then web app)
+    Sign In (curl then web app)
+    Change Password (curl then web app)
+    Sign Out (curl then web page)
+    All API calls have success or failure messages
+    Review jquery-ajax-crud or react-crud
+    Create resource (curl then web app)
+    Get all of their owned resources (curl then web app)
+    Delete single resource (curl then web app)
+    Update single resource (curl then web app)
+   Final Touches
+    README
+    Troubleshoot/Debug
+    Style
 
-```sh
-curl-scripts/sign-in.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-  "user": {
-    "id": 1,
-    "email": "an@example.email",
-    "token": "33ad6372f795694b333ec5f329ebeaaa"
-  }
-}
-```
-
-#### PATCH /change-password/
-
-Request:
-
-```sh
-curl --include --request PATCH http://localhost:4741/change-password/ \
-  --header "Authorization: Token token=$TOKEN" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "passwords": {
-      "old": "an example password",
-      "new": "super sekrit"
-    }
-  }'
-```
-
-```sh
-TOKEN=33ad6372f795694b333ec5f329ebeaaa curl-scripts/change-password.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 204 No Content
-```
-
-#### DELETE /sign-out/
-
-Request:
-
-```sh
-curl --include --request DELETE http://localhost:4741/sign-out/ \
-  --header "Authorization: Token token=$TOKEN"
-```
-
-```sh
-TOKEN=33ad6372f795694b333ec5f329ebeaaa curl-scripts/sign-out.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 204 No Content
-```
+## ERD
+<img width="561" alt="Screen Shot 2020-04-02 at 10 12 38 PM" src="https://user-images.githubusercontent.com/59259041/78317046-37e6b280-752f-11ea-8903-51b160435287.png">
+<img width="634" alt="Screen Shot 2020-04-02 at 10 12 42 PM" src="https://user-images.githubusercontent.com/59259041/78317056-4208b100-752f-11ea-998a-3c075689ed0a.png">
