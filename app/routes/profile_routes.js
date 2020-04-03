@@ -29,7 +29,7 @@ const router = express.Router()
 
 // INDEX SIGNED IN, OWNED
 // GET /events/owned
-router.get('/profiles/owned', requireToken, (req, res, next) => {
+router.get('/profiles-owned', requireToken, (req, res, next) => {
   Profile.find({ owner: req.user._id })
     .then(profiles => {
       // `events` will be an array of Mongoose documents
