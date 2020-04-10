@@ -87,7 +87,7 @@ router.get('/profiles/:id', requireToken, (req, res, next) => {
     .catch(next)
 })
 
-router.get('/profiles/owned/:id', requireToken, (req, res, next) => {
+router.get('/profiles-owned/:id', requireToken, (req, res, next) => {
   // req.params.id will be set based on the `:id` in the route
   Profile.findById(req.params.id)
     .then(handle404)
