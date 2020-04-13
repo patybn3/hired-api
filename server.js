@@ -39,6 +39,8 @@ const app = express()
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
 app.use(cors())
+// removed the origin below due to the change on client origin from github to
+// custom url
 // { origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}` }
 
 // define port for API to run on
