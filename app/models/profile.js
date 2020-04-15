@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 
 const profileSchema = new mongoose.Schema({
-  url: {
-    type: String
+  profileUrl: {
+    type: String,
+    required: true
   },
   name: {
     type: String,
