@@ -104,7 +104,7 @@ router.get('/profiles-owned/:id', requireToken, (req, res, next) => {
 
 // CREATE
 // POST /examples
-router.post('/profiles', [upload.single('file'), requireToken], (req, res, next) => {
+router.post('/profiles', upload.single('file'), requireToken, (req, res, next) => {
   // set owner of new example to be current user
   // req.body.profile.owner = req.user.id
   console.log(req.file)
@@ -114,12 +114,11 @@ router.post('/profiles', [upload.single('file'), requireToken], (req, res, next)
   // req.body.profile
   s3Upload(path, mimetype)
     .then((data) => {
-      const profileUrl = data.Location
+      const url = data.location
       const name = req.body.name
 
       // respond to succesful `create` with status 201 and JSON of new "example"
       return Profile.create({
-        profileUrl: profileUrl,
         name: name,
         title: req.body.title,
         education: req.body.education,
@@ -130,6 +129,7 @@ router.post('/profiles', [upload.single('file'), requireToken], (req, res, next)
         website: req.body.website,
         portfolio: req.body.portfolio,
         other: req.body.other,
+        file: url,
         owner: req.user.id
       })
     })
@@ -144,7 +144,7 @@ router.post('/profiles', [upload.single('file'), requireToken], (req, res, next)
 
 // UPDATE
 // PATCH /examples/5a7db6c74d55bc51bdf39793
-router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlanks, (req, res, next) => {
+router.patch('/profiles/:id', upload.single('file'), requireToken, removeBlanks, (req, res, next) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
   // delete req.body.profile.owner
@@ -158,7 +158,6 @@ router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlank
 
       // pass the result of Mongoose's `.update` to the next `.then`
       return profile.updateOne({
-        profilelUrl: req.body.profileUrl,
         name: req.body.name,
         title: req.body.title,
         education: req.body.education,
@@ -168,7 +167,8 @@ router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlank
         contact: req.body.contact,
         website: req.body.website,
         portfolio: req.body.portfolio,
-        other: req.body.other
+        other: req.body.other,
+        file: req.body.url
       })
     })
     // if that succeeded, return 204 and no JSON
