@@ -1,9 +1,6 @@
 const mongoose = require('mongoose')
 
 const profileSchema = new mongoose.Schema({
-  url: {
-    type: String
-  },
   name: {
     type: String,
     required: true

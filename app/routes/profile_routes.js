@@ -3,13 +3,8 @@ const express = require('express')
 // Passport docs: http://www.passportjs.org/docs/
 const passport = require('passport')
 
-const multer = require('multer')
-
-const upload = multer({ dest: 'profiles/' })
 // pull in Mongoose model for examples
 const Profile = require('../models/profile')
-
-const s3Upload = require('./../../lib/s3Upload')
 
 // this is a collection of methods that help us detect situations when we need
 // to throw a custom error
@@ -50,19 +45,19 @@ router.get('/profiles-owned', requireToken, (req, res, next) => {
 
 // INDEX SIGNED OUT
 // GET /events/
-// router.get('/profiles/openall', (req, res, next) => {
-//   Profile.find()
-//     .then(profiles => {
-//       // `events` will be an array of Mongoose documents
-//       // we want to convert each one to a POJO, so we use `.map` to
-//       // apply `.toObject` to each one
-//       return profiles.map(profile => profile.toObject())
-//     })
-//     // respond with status 200 and JSON of the events
-//     .then(profiles => res.status(200).json({ profiles: profiles }))
-//     // if an error occurs, pass it to the handler
-//     .catch(next)
-// })
+router.get('/profiles/openall', (req, res, next) => {
+  Profile.find()
+    .then(profiles => {
+      // `events` will be an array of Mongoose documents
+      // we want to convert each one to a POJO, so we use `.map` to
+      // apply `.toObject` to each one
+      return profiles.map(profile => profile.toObject())
+    })
+    // respond with status 200 and JSON of the events
+    .then(profiles => res.status(200).json({ profiles: profiles }))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
 
 // INDEX SIGNED IN
 // GET /events
@@ -104,35 +99,12 @@ router.get('/profiles-owned/:id', requireToken, (req, res, next) => {
 
 // CREATE
 // POST /examples
-router.post('/profiles', upload.single('file'), requireToken, (req, res, next) => {
+router.post('/profiles', requireToken, (req, res, next) => {
   // set owner of new example to be current user
-  // req.body.profile.owner = req.user.id
-  console.log(req.file)
-  const path = req.file.path
-  const mimetype = req.file.mimetype
-  console.log(path)
-  // req.body.profile
-  s3Upload(path, mimetype)
-    .then((data) => {
-      const url = data.location
-      const name = req.body.name
+  req.body.profile.owner = req.user.id
 
-      // respond to succesful `create` with status 201 and JSON of new "example"
-      return Profile.create({
-        name: name,
-        title: req.body.title,
-        education: req.body.education,
-        description: req.body.description,
-        location: req.body.location,
-        salary: req.body.salary,
-        contact: req.body.contact,
-        website: req.body.website,
-        portfolio: req.body.portfolio,
-        other: req.body.other,
-        file: url,
-        owner: req.user.id
-      })
-    })
+  Profile.create(req.body.profile)
+    // respond to succesful `create` with status 201 and JSON of new "example"
     .then(profile => {
       res.status(201).json({ profile: profile.toObject() })
     })
@@ -144,10 +116,10 @@ router.post('/profiles', upload.single('file'), requireToken, (req, res, next) =
 
 // UPDATE
 // PATCH /examples/5a7db6c74d55bc51bdf39793
-router.patch('/profiles/:id', upload.single('file'), requireToken, removeBlanks, (req, res, next) => {
+router.patch('/profiles/:id', requireToken, removeBlanks, (req, res, next) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
-  // delete req.body.profile.owner
+  delete req.body.profile.owner
 
   Profile.findById(req.params.id)
     .then(handle404)
@@ -157,19 +129,7 @@ router.patch('/profiles/:id', upload.single('file'), requireToken, removeBlanks,
       requireOwnership(req, profile)
 
       // pass the result of Mongoose's `.update` to the next `.then`
-      return profile.updateOne({
-        name: req.body.name,
-        title: req.body.title,
-        education: req.body.education,
-        description: req.body.description,
-        location: req.body.location,
-        salary: req.body.salary,
-        contact: req.body.contact,
-        website: req.body.website,
-        portfolio: req.body.portfolio,
-        other: req.body.other,
-        file: req.body.url
-      })
+      return profile.updateOne(req.body.profile)
     })
     // if that succeeded, return 204 and no JSON
     .then(() => res.sendStatus(204))
