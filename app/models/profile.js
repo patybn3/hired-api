@@ -38,6 +38,10 @@ const profileSchema = new mongoose.Schema({
     type: String,
     require: true
   },
+  skills: {
+    type: String,
+    require: true
+  },
   website: {
     type: String
   },
