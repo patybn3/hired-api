@@ -2,8 +2,7 @@ const mongoose = require('mongoose')
 
 const profileSchema = new mongoose.Schema({
   profileUrl: {
-    type: String,
-    required: true
+    type: String
   },
   name: {
     type: String,
@@ -14,8 +13,7 @@ const profileSchema = new mongoose.Schema({
     required: true
   },
   education: {
-    type: String,
-    required: true
+    type: String
   },
   description: {
     type: String,
@@ -38,10 +36,9 @@ const profileSchema = new mongoose.Schema({
     type: String,
     require: true
   },
-  skills: {
-    type: String,
-    require: true
-  },
+  skills: [{
+    type: String
+  }],
   website: {
     type: String
   },

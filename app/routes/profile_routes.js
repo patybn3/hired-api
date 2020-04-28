@@ -150,7 +150,7 @@ router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlank
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
   // delete req.body.profile.owner
-
+  console.log(req.file)
   Profile.findById(req.params.id)
     .then(handle404)
     .then(profile => {
@@ -160,7 +160,7 @@ router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlank
 
       // pass the result of Mongoose's `.update` to the next `.then`
       return profile.updateOne({
-        profilelUrl: req.body.profileUrl,
+        profilelUrl: profile.Location,
         name: req.body.name,
         title: req.body.title,
         education: req.body.education,
