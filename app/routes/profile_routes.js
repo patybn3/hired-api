@@ -12,6 +12,7 @@ const upload = multer({ dest: 'pictures/' })
 // const User = require('../models/upload')
 
 const s3Upload = require('./../../lib/s3Upload')
+// const s3Delete = require('./../../lib/s3Delete')
 
 // this is a collection of methods that help us detect situations when we need
 // to throw a custom error
@@ -146,39 +147,106 @@ router.post('/profiles', [upload.single('file'), requireToken], (req, res, next)
 
 // UPDATE
 // PATCH /examples/5a7db6c74d55bc51bdf39793
+// router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlanks, (req, res, next) => {
+//   // if the client attempts to change the `owner` property by including a new
+//   // owner, prevent that by deleting that key/value pair
+//   // delete req.body.profile.owner
+//   console.log(req.file)
+//   Profile.findById(req.params.id)
+//     .then(handle404)
+//     .then(profile => {
+//       // pass the `req` object and the Mongoose record to `requireOwnership`
+//       // it will throw an error if the current user isn't the owner
+//       requireOwnership(req, profile)
+//
+//       // pass the result of Mongoose's `.update` to the next `.then`
+//       return profile.updateOne({
+//         profilelUrl: profile.Location,
+//         name: req.body.name,
+//         title: req.body.title,
+//         education: req.body.education,
+//         description: req.body.description,
+//         location: req.body.location,
+//         skills: req.body.skills,
+//         salary: req.body.salary,
+//         contact: req.body.contact,
+//         website: req.body.website,
+//         portfolio: req.body.portfolio,
+//         other: req.body.other,
+//         owner: req.user.id
+//       })
+//     })
+//     // if that succeeded, return 204 and no JSON
+//     .then(() => res.sendStatus(204))
+//     // if an error occurs, pass it to the handler
+//     .catch(next)
+// })
+
 router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlanks, (req, res, next) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
   // delete req.body.profile.owner
-  console.log(req.file)
-  Profile.findById(req.params.id)
-    .then(handle404)
-    .then(profile => {
-      // pass the `req` object and the Mongoose record to `requireOwnership`
-      // it will throw an error if the current user isn't the owner
-      requireOwnership(req, profile)
+  delete req.body.user
 
-      // pass the result of Mongoose's `.update` to the next `.then`
-      return profile.updateOne({
-        profilelUrl: profile.Location,
-        name: req.body.name,
-        title: req.body.title,
-        education: req.body.education,
-        description: req.body.description,
-        location: req.body.location,
-        skills: req.body.skills,
-        salary: req.body.salary,
-        contact: req.body.contact,
-        website: req.body.website,
-        portfolio: req.body.portfolio,
-        other: req.body.other,
-        owner: req.user.id
-      })
+  const path = req.file.path
+  const mimetype = req.file.mimetype
+
+  s3Upload(path, mimetype)
+    .then(aws => {
+      Profile.findById(req.params.id)
+        .then(handle404)
+        .then(profile => {
+          requireOwnership(req, profile)
+          // if (profile.Location) {
+          //   s3Delete({
+          //     Bucket: process.env.BUCKET_NAME,
+          //     Key: profile.Location.split('/').pop()
+          //   })
+          // }
+          return profile.set({
+            profileUrl: aws.Location,
+            name: req.body.name,
+            title: req.body.title,
+            education: req.body.education,
+            description: req.body.description,
+            location: req.body.location,
+            skills: req.body.skills,
+            salary: req.body.salary,
+            contact: req.body.contact,
+            website: req.body.website,
+            portfolio: req.body.portfolio,
+            other: req.body.other,
+            owner: req.user.id
+          }).save()
+        })
+        .then((profile) => res.status(200).json({ profile: profile.toObject() }))
+        .catch(next)
     })
-    // if that succeeded, return 204 and no JSON
-    .then(() => res.sendStatus(204))
-    // if an error occurs, pass it to the handler
-    .catch(next)
+  // else {
+  //   Profile.findById(req.params.id)
+  //     .then(handle404)
+  //     .then(profile => {
+  //       requireOwnership(req, profile)
+  //
+  //       return Profile.updateOne({
+  //         profilelUrl: profile.Location,
+  //         name: req.body.name,
+  //         title: req.body.title,
+  //         education: req.body.education,
+  //         description: req.body.description,
+  //         location: req.body.location,
+  //         skills: req.body.skills,
+  //         salary: req.body.salary,
+  //         contact: req.body.contact,
+  //         website: req.body.website,
+  //         portfolio: req.body.portfolio,
+  //         other: req.body.other,
+  //         owner: req.user.id
+  //       })
+  //     })
+  //     .then(() => res.sendStatus(204))
+  //     .catch(next)
+  // }
 })
 
 // DESTROY
@@ -187,14 +255,14 @@ router.delete('/profiles/:id', requireToken, (req, res, next) => {
   Profile.findById(req.params.id)
     .then(handle404)
     .then(profile => {
-      // throw an error if current user doesn't own `example`
+    // throw an error if current user doesn't own `example`
       requireOwnership(req, profile)
       // delete the example ONLY IF the above didn't throw
       profile.deleteOne()
     })
-    // send back 204 and no content if the deletion succeeded
+  // send back 204 and no content if the deletion succeeded
     .then(() => res.sendStatus(204))
-    // if an error occurs, pass it to the handler
+  // if an error occurs, pass it to the handler
     .catch(next)
 })
 
