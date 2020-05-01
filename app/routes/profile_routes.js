@@ -188,7 +188,7 @@ router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlank
   // delete req.body.profile.owner
   delete req.body.user
 
-  const path = req.file.path
+  let path = req.file.path
   const mimetype = req.file.mimetype
 
   s3Upload(path, mimetype)
@@ -197,6 +197,7 @@ router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlank
         .then(handle404)
         .then(profile => {
           requireOwnership(req, profile)
+
           // if (profile.Location) {
           //   s3Delete({
           //     Bucket: process.env.BUCKET_NAME,
@@ -222,31 +223,6 @@ router.patch('/profiles/:id', [upload.single('file'), requireToken], removeBlank
         .then((profile) => res.status(200).json({ profile: profile.toObject() }))
         .catch(next)
     })
-  // else {
-  //   Profile.findById(req.params.id)
-  //     .then(handle404)
-  //     .then(profile => {
-  //       requireOwnership(req, profile)
-  //
-  //       return Profile.updateOne({
-  //         profilelUrl: profile.Location,
-  //         name: req.body.name,
-  //         title: req.body.title,
-  //         education: req.body.education,
-  //         description: req.body.description,
-  //         location: req.body.location,
-  //         skills: req.body.skills,
-  //         salary: req.body.salary,
-  //         contact: req.body.contact,
-  //         website: req.body.website,
-  //         portfolio: req.body.portfolio,
-  //         other: req.body.other,
-  //         owner: req.user.id
-  //       })
-  //     })
-  //     .then(() => res.sendStatus(204))
-  //     .catch(next)
-  // }
 })
 
 // DESTROY
